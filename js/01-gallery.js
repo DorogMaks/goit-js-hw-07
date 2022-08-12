@@ -3,35 +3,35 @@ import { galleryItems } from "./gallery-items.js";
 
 const gallery = document.querySelector(".gallery");
 
-gallery.insertAdjacentHTML("beforeend", createGalleryList(galleryItems));
+const galleryListMarkUp = createGalleryList(galleryItems);
+gallery.insertAdjacentHTML("beforeend", galleryListMarkUp);
+gallery.addEventListener("click", onImageClick);
 
 function createGalleryList(imagesArray) {
   return imagesArray
-    .map((elem) => {
-      return `<div class="gallery__item">
-        <a class="gallery__link" href="large-image.jpg">
+    .map(({ original, preview, description }) => {
+      return `
+      <div class="gallery__item">
+        <a class="gallery__link" href="${original}">
           <img
             class="gallery__image"
-            src="${elem.preview}"
-            data-source="${elem.original}"
-            alt="${elem.description}"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}"
           />
         </a>
-    </div>`;
+      </div>`;
     })
     .join("");
 }
 
-gallery.addEventListener("click", onImageClick);
-
 function onImageClick(evt) {
   evt.preventDefault();
+
   if (evt.target.nodeName !== "IMG") return;
 
   const instance = basicLightbox.create(`
-    <img src="${evt.target.getAttribute(
-      "data-source"
-    )}" width="800" height="600">
+    <img src="${evt.target.dataset.source}" width="800" height="600">
 `);
 
   instance.show();
